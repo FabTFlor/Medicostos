@@ -1,4 +1,4 @@
-package com.generation.medicosto_nacho.repository;
+package com.generation.medicosto_nacho.controller;
 
 
 import com.generation.medicosto_nacho.models.Farmacia;
