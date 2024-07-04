@@ -3,9 +3,7 @@ package com.generation.medicostos.scraper;
 import com.generation.medicostos.dto.MedicamentoDTO;
 import com.generation.medicostos.repository.MedicamentoRepository;
 import com.generation.medicostos.service.MedicamentoService;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -18,7 +16,7 @@ import java.time.Duration;
 import java.util.List;
 
 @Component
-public class FarmaciasAhumadaScraper {
+public class DrSimiScraper {
 
     @Autowired
     private MedicamentoRepository medicamentoRepository;
@@ -36,42 +34,42 @@ public class FarmaciasAhumadaScraper {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         try {
-            driver.get("https://www.farmaciasahumada.cl/medicamentos");
+            driver.get("https://www.drsimi.cl/medicamento");
             Thread.sleep(6000);
 
-            WebElement noButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'No')]")));
-            noButton.click();
-
-            for (int i = 0; i < 100; i++) {
-                Thread.sleep(750);
-
-                WebElement npButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Más Resultados')]")));
+            for (int i = 0; i < 5; i++) {
+                Thread.sleep(2000);
+                WebElement npButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[contains(text(),'Mostrar más')]")));
                 npButton.click();
             }
 
-            List<WebElement> productList = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".product-tile-wrapper")));
+            List<WebElement> productList = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".vtex-search-result-3-x-galleryItem.vtex-search-result-3-x-galleryItem--normal.vtex-search-result-3-x-galleryItem--grid.pa4")));
             System.out.println("boxes: " + productList.size());
 
+
+
+
+
             for (WebElement product : productList) {
-                System.out.println("Entra al for");
                 String nombre = null;
+                String complemento = null;
+                String precioString = null;
 
                 try {
-                    nombre = product.findElement(By.cssSelector(".pdp-link a.link")).getText();
+                    nombre = product.findElement(By.cssSelector("span.vtex-product-summary-2-x-productBrand.vtex-product-summary-2-x-brandName.t-body")).getText();
                 } catch (Exception e) {
                     System.out.println("Nombre no encontrado");
                 }
 
-                String complemento = null;
                 try {
-                    complemento = product.findElement(By.cssSelector(".product-tile-brand span.link")).getText();
-                } catch (Exception e) {
+                    // Ajustar el selector CSS para el elemento que contiene "Prevención del embarazo"
+                    complemento = product.findElement(By.cssSelector("span.vtex-product-summary-2-x-description div[style='display: contents;']")).getText();
+                }catch (Exception e) {
                     System.out.println("Complemento no encontrado");
                 }
 
-                String precioString = null;
                 try {
-                    precioString = product.findElement(By.cssSelector(".price .value")).getText();
+                    precioString = product.findElement(By.cssSelector("span.vtex-product-price-1-x-sellingPrice")).getText();
                 } catch (Exception e) {
                     System.out.println("Precio no encontrado");
                 }
@@ -80,10 +78,9 @@ public class FarmaciasAhumadaScraper {
                     String precioSinSimbolos = precioString.replace("$", "").replace(".", "");
                     BigDecimal precio = new BigDecimal(precioSinSimbolos);
 
-                    System.out.println("Antes de imagen");
                     String urlImagen = null;
                     try {
-                        WebElement imgElement = product.findElement(By.cssSelector(".image-container img.tile-image"));
+                        WebElement imgElement = product.findElement(By.cssSelector("img.vtex-product-summary-2-x-image"));
                         urlImagen = imgElement.getAttribute("src");
                     } catch (Exception e) {
                         System.out.println("Imagen no encontrada");
@@ -91,13 +88,13 @@ public class FarmaciasAhumadaScraper {
 
                     String urlMedicamento = null;
                     try {
-                        urlMedicamento = "https://www.farmaciasahumada.cl" + product.findElement(By.cssSelector(".pdp-link a.link")).getAttribute("href");
+                        urlMedicamento = product.findElement(By.cssSelector(".vtex-product-summary-2-x-clearLink")).getAttribute("href");
                     } catch (Exception e) {
                         System.out.println("URL de medicamento no encontrada");
                     }
 
-                    // ID de la farmacia "Farmacias Ahumada"
-                    Long farmaciaID = 1L;
+                    // ID de la farmacia "Dr. Simi"
+                    Long farmaciaID = 3L;
 
                     MedicamentoDTO medicamentoDTO = new MedicamentoDTO();
                     medicamentoDTO.setNombre(nombre);
@@ -112,6 +109,10 @@ public class FarmaciasAhumadaScraper {
                     medicamentoService.saveMedicamento(medicamentoDTO);
                 }
             }
+
+            // Exportar la lista de medicamentos a un archivo Excel (opcional)
+            // exportToExcel(medications);
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
