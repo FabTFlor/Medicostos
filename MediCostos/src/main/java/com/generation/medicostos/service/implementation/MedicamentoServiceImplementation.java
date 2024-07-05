@@ -69,7 +69,7 @@ public class MedicamentoServiceImplementation implements MedicamentoService {
         dto.setFarmaciaId(medicamento.getFarmacia().getId());
         dto.setFarmaciaNombre(medicamento.getFarmacia().getNombre());
         dto.setFarmaciaDireccion(medicamento.getFarmacia().getDireccion());
-        dto.setFarnaciaTelefono(medicamento.getFarmacia().getTelefono());
+        dto.setFarmaciaTelefono(medicamento.getFarmacia().getTelefono());
         dto.setFarmaciaUrlImg(medicamento.getFarmacia().getUrl_img());
         dto.setFarmaciaUrlWeb(medicamento.getFarmacia().getUrl_web());
         return dto;

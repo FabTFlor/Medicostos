@@ -22,7 +22,7 @@ public class MedicamentoDTO {
     private long farmaciaId;
     private String farmaciaNombre;
     private String farmaciaDireccion;
-    private String farnaciaTelefono;
+    private String farmaciaTelefono;
     private String farmaciaUrlImg;
     private String farmaciaUrlWeb;
 }
