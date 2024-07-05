@@ -1,8 +1,6 @@
 package com.generation.medicostos.controller;
 
-import com.generation.medicostos.scraper.DrSimiScraper;
-import com.generation.medicostos.scraper.FarmaciasAhumadaScraper;
-import com.generation.medicostos.scraper.SalcobrandScraper;
+import com.generation.medicostos.scraper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +19,23 @@ public class ScraperController {
     @Autowired
     private DrSimiScraper drSimiScraper;
 
+    @Autowired
+    private EcoFarmaciasScrapper ecoFarmaciasScrapper;
+
+    @Autowired
+    private FarmaciasChileScraper farmaciasChileScraper;
+
+    @Autowired
+    private LaBotikaScraper laBotikaScraper;
+
     @GetMapping("/run")
     public String runScraper() {
-        drSimiScraper.scrapeAndSaveMedications();
+        farmaciasAhumadaScraper.scrapeAndSaveMedications();
+       laBotikaScraper.scrapeAndSaveMedications();
+       farmaciasChileScraper.scrapeAndSaveMedications();
+       salcobrandScraper.scrapeAndSaveMedications();
+       drSimiScraper.scrapeAndSaveMedications();
+       ecoFarmaciasScrapper.scrapeAndSaveMedications();
         return "Scraper ejecutado con éxito";
     }
 }

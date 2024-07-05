@@ -7,10 +7,13 @@ import com.generation.medicostos.repository.FarmaciaRepository;
 import com.generation.medicostos.repository.MedicamentoRepository;
 import com.generation.medicostos.service.MedicamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicamentoServiceImplementation implements MedicamentoService {
@@ -48,10 +51,27 @@ public class MedicamentoServiceImplementation implements MedicamentoService {
     public List<Medicamento> getAllMedicamento() {
         return medicamentoRepository.findAll();
     }
+
+    @Override
+    public List<MedicamentoDTO> searchMedications(String query, int page, int size) {
+        Page<Medicamento> medicationsPage = medicamentoRepository.findByNombreContainingIgnoreCaseOrComplementoContainingIgnoreCaseOrderByPrecioAsc(query, query, PageRequest.of(page, size));
+
+        return medicationsPage.getContent().stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    private MedicamentoDTO convertToDTO(Medicamento medicamento) {
+        MedicamentoDTO dto = new MedicamentoDTO();
+        dto.setNombre(medicamento.getNombre());
+        dto.setComplemento(medicamento.getComplemento());
+        dto.setPrecio(medicamento.getPrecio());
+        dto.setUrlImagen(medicamento.getUrlImagen());
+        dto.setUrlMedicamento(medicamento.getUrlMedicamento());
+        dto.setFarmaciaId(medicamento.getFarmacia().getId());
+        dto.setFarmaciaNombre(medicamento.getFarmacia().getNombre());
+        dto.setFarmaciaDireccion(medicamento.getFarmacia().getDireccion());
+        dto.setFarnaciaTelefono(medicamento.getFarmacia().getTelefono());
+        dto.setFarmaciaUrlImg(medicamento.getFarmacia().getUrl_img());
+        dto.setFarmaciaUrlWeb(medicamento.getFarmacia().getUrl_web());
+        return dto;
+    }
 }
-
-
-
-
-
-

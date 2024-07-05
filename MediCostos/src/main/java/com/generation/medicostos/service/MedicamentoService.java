@@ -8,4 +8,5 @@ import java.util.List;
 public interface MedicamentoService {
     Medicamento saveMedicamento(MedicamentoDTO medicationDTO);
     List<Medicamento> getAllMedicamento();
+    List<MedicamentoDTO> searchMedications(String query, int page, int size); // Nuevo método
 }

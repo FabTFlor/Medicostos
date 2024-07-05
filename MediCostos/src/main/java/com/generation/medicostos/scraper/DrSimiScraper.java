@@ -37,7 +37,7 @@ public class DrSimiScraper {
             driver.get("https://www.drsimi.cl/medicamento");
             Thread.sleep(6000);
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 20; i++) {
                 Thread.sleep(2000);
                 WebElement npButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[contains(text(),'Mostrar más')]")));
                 npButton.click();
@@ -63,13 +63,13 @@ public class DrSimiScraper {
 
                 try {
                     // Ajustar el selector CSS para el elemento que contiene "Prevención del embarazo"
-                    complemento = product.findElement(By.cssSelector("span.vtex-product-summary-2-x-description div[style='display: contents;']")).getText();
+                    complemento = product.findElement(By.cssSelector("span.vtex-product-summary-2-x-description.c-muted-2.t-small")).getText();
                 }catch (Exception e) {
                     System.out.println("Complemento no encontrado");
                 }
 
                 try {
-                    precioString = product.findElement(By.cssSelector("span.vtex-product-price-1-x-sellingPrice")).getText();
+                    precioString = product.findElement(By.cssSelector("span.vtex-product-price-1-x-sellingPrice div")).getText();
                 } catch (Exception e) {
                     System.out.println("Precio no encontrado");
                 }

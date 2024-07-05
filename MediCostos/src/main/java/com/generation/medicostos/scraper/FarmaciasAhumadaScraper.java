@@ -38,11 +38,14 @@ public class FarmaciasAhumadaScraper {
         try {
             driver.get("https://www.farmaciasahumada.cl/medicamentos");
             Thread.sleep(6000);
+            try {
 
-            WebElement noButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'No')]")));
-            noButton.click();
+                WebElement noButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'No')]")));
+                noButton.click();
+            }catch (Exception e){
+            System.out.println("no hay ventana extra");}
 
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 20; i++) {
                 Thread.sleep(750);
 
                 WebElement npButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Más Resultados')]")));

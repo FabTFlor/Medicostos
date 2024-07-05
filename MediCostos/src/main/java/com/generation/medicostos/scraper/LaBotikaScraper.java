@@ -3,7 +3,10 @@ package com.generation.medicostos.scraper;
 import com.generation.medicostos.dto.MedicamentoDTO;
 import com.generation.medicostos.repository.MedicamentoRepository;
 import com.generation.medicostos.service.MedicamentoService;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -16,7 +19,7 @@ import java.time.Duration;
 import java.util.List;
 
 @Component
-public class SalcobrandScraper {
+public class LaBotikaScraper {
 
     @Autowired
     private MedicamentoRepository medicamentoRepository;
@@ -34,13 +37,17 @@ public class SalcobrandScraper {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         try {
-            driver.get("https://salcobrand.cl/t/medicamentos");
+            driver.get("https://farmacialabotika.cl/collections/medicamentos");
+            Thread.sleep(4000);
 
-            Thread.sleep(2000);
-            WebElement npButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"search-result\"]/div[1]/div[2]/div/div[2]/div[2]/div/div/select")));
+            WebElement noButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("            //*[@id=\"omnisend-form-63b2014c3316ca7c173a8958-form-close-icon\"]\n")));
+            noButton.click();
+
+
+            WebElement npButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"shopify-section-template--16497710465184__main\"]/section/div[1]/div[2]/div[2]/div/div/div/div[1]/div[1]/div/button")));
             npButton.click();
             Thread.sleep(2000);
-            WebElement np96Button = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"search-result\"]/div[1]/div[2]/div/div[2]/div[2]/div/div/select/option[4]")));
+            WebElement np96Button = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"display-by-selector\"]/div/div/button[3]")));
             np96Button.click();
             Thread.sleep(5000);
 
@@ -48,8 +55,8 @@ public class SalcobrandScraper {
 
             for (int page = 1; page <= pg; page++) {
                 try {
-                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".pagination-sm .active a")));
-                    WebElement currentPageElement = driver.findElement(By.cssSelector(".pagination-sm .active a"));
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".pagination__nav-item.is-active")));
+                    WebElement currentPageElement = driver.findElement(By.cssSelector(".pagination__nav-item.is-active"));
                     String currentPage = currentPageElement.getText();
                     System.out.println("Página actual: " + currentPage);
 
@@ -60,58 +67,54 @@ public class SalcobrandScraper {
                     js.executeScript("window.scrollBy(0, document.body.scrollHeight);");
                     Thread.sleep(2000);
 
-                    js.executeScript("window.scrollBy(0, -1500);");
+                    js.executeScript("window.scrollBy(0, -700);");
                     Thread.sleep(1000);
 
-                    List<WebElement> productList = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".inner-product-box")));
+                    List<WebElement> productList = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".product-item.product-item--vertical")));
                     System.out.println("boxes: " + productList.size());
 
                     for (WebElement product : productList) {
                         String nombre = null;
-                        String complemento = null;
+                        String complemento = "";
                         String precioString = null;
                         System.out.println("entro al for");
 
                         try {
-                            nombre = product.findElement(By.cssSelector(".product-name.truncate")).getText();
+                            nombre = product.findElement(By.cssSelector(".product-item__title.text--strong.link")).getText();
                         } catch (Exception e) {
                             System.out.println("Nombre no encontrado");
                         }
-                        System.out.println("hay nombre");
+
 
                         try {
-                            complemento = product.findElement(By.cssSelector(".product-info.truncate")).getText();
-                        } catch (Exception e) {
-                            System.out.println("Compuesto activo no encontrado");
-                        }
-
-                        try {
-                            precioString = product.findElement(By.cssSelector(".price.selling")).getText();
+                            precioString = product.findElement(By.cssSelector(".price")).getText();
                         } catch (Exception e) {
                             System.out.println("Precio no encontrado");
                         }
 
                         if (precioString != null) {
-                            String precioSinSimbolos = precioString.replace("Precio farmacia: $", "").replace(".", "");
+                            String precioSinSimbolos = precioString.replace("$", "").replace(".", "").replace(",", "").replace("Precio de venta\n", "");
+
                             BigDecimal precio = new BigDecimal(precioSinSimbolos);
 
                             String urlImagen = null;
                             try {
-                                WebElement imgElement = product.findElement(By.cssSelector(".inner-product-box img"));
+                                WebElement imgElement = product.findElement(By.cssSelector("img.product-item__primary-image"));
                                 urlImagen = imgElement.getAttribute("src");
+                                System.out.println(urlImagen);
                             } catch (Exception e) {
                                 System.out.println("Imagen no encontrada");
                             }
 
                             String urlMedicamento = null;
                             try {
-                                urlMedicamento = product.findElement(By.cssSelector(".info a")).getAttribute("href");
+                                urlMedicamento = product.findElement(By.cssSelector("a.product-item__title.text--strong.link")).getAttribute("href");
                             } catch (Exception e) {
                                 System.out.println("URL de medicamento no encontrada");
                             }
 
                             // ID de la farmacia "Salcobrand"
-                            Long farmaciaID = 2L;
+                            Long farmaciaID = 6L;
 
                             MedicamentoDTO medicamentoDTO = new MedicamentoDTO();
                             medicamentoDTO.setNombre(nombre);
@@ -131,9 +134,8 @@ public class SalcobrandScraper {
                     if (page < pg) {
                         Thread.sleep(100);
 
-                        WebElement nextButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'»')]")));
+                        WebElement nextButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'Siguiente')]")));
                         nextButton.click();
-                        js.executeScript("window.scrollBy(0, -38500)");
                         Thread.sleep(2000);
                     }
                 } catch (Exception e) {
