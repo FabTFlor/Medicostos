@@ -37,6 +37,7 @@ public class MedicamentoServiceImplementation implements MedicamentoService {
         Farmacia farmacia = optionalPharmacy.get();
 
         Medicamento medicamento = new Medicamento();
+        medicamento.setId(medicamentoDTO.getId());
         medicamento.setNombre(medicamentoDTO.getNombre());
         medicamento.setComplemento(medicamentoDTO.getComplemento());
         medicamento.setPrecio(medicamentoDTO.getPrecio());
@@ -54,13 +55,14 @@ public class MedicamentoServiceImplementation implements MedicamentoService {
 
     @Override
     public List<MedicamentoDTO> searchMedications(String query, int page, int size) {
-        Page<Medicamento> medicationsPage = medicamentoRepository.findByNombreContainingIgnoreCaseOrComplementoContainingIgnoreCaseOrderByPrecioAsc(query, query, PageRequest.of(page, size));
+        Page<Medicamento> medicationsPage = medicamentoRepository.findMedicamentosByNombreContainingIgnoreCaseOrComplementoContainingIgnoreCaseAndPrecioGreaterThanOrderByPrecioAsc(query, query, PageRequest.of(page, size));
 
         return medicationsPage.getContent().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     private MedicamentoDTO convertToDTO(Medicamento medicamento) {
         MedicamentoDTO dto = new MedicamentoDTO();
+        dto.setId(medicamento.getId());
         dto.setNombre(medicamento.getNombre());
         dto.setComplemento(medicamento.getComplemento());
         dto.setPrecio(medicamento.getPrecio());
