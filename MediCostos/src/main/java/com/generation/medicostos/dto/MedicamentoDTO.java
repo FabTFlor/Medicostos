@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 
 public class MedicamentoDTO {
+    private  long id;
     private String nombre;
     private String complemento;
     private BigDecimal precio;
