@@ -30,12 +30,12 @@ public class ScraperController {
 
     @GetMapping("/run")
     public String runScraper() {
-        farmaciasAhumadaScraper.scrapeAndSaveMedications();
-       laBotikaScraper.scrapeAndSaveMedications();
-       farmaciasChileScraper.scrapeAndSaveMedications();
-       salcobrandScraper.scrapeAndSaveMedications();
-       drSimiScraper.scrapeAndSaveMedications();
-       ecoFarmaciasScrapper.scrapeAndSaveMedications();
+    //    drSimiScraper.scrapeAndSaveMedications();
+    //   farmaciasChileScraper.scrapeAndSaveMedications();
+    //    farmaciasAhumadaScraper.scrapeAndSaveMedications();
+      laBotikaScraper.scrapeAndSaveMedications();
+    //  salcobrandScraper.scrapeAndSaveMedications();
+     //  ecoFarmaciasScrapper.scrapeAndSaveMedications();
         return "Scraper ejecutado con éxito";
     }
 }

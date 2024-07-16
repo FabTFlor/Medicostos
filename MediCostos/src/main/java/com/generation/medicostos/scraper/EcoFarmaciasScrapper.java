@@ -41,7 +41,7 @@ public class EcoFarmaciasScrapper {
 
             Thread.sleep(3000);
 
-            int pg = 20;
+            int pg = 59;
 
             for (int page = 1; page <= pg; page++) {
                 try {

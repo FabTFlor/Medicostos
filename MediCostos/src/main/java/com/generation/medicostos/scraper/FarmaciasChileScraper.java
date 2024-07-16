@@ -41,7 +41,7 @@ public class FarmaciasChileScraper {
 
             Thread.sleep(3000);
 
-            int pg = 20;
+            int pg = 40;
 
             for (int page = 1; page <= pg; page++) {
                 try {

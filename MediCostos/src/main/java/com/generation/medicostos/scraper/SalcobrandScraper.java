@@ -44,7 +44,7 @@ public class SalcobrandScraper {
             np96Button.click();
             Thread.sleep(5000);
 
-            int pg = 20;
+            int pg = 33;
 
             for (int page = 1; page <= pg; page++) {
                 try {

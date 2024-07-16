@@ -45,12 +45,17 @@ public class FarmaciasAhumadaScraper {
             }catch (Exception e){
             System.out.println("no hay ventana extra");}
 
-            for (int i = 0; i < 20; i++) {
+           try {
+
+
+            for (int i = 0; i < 500; i++) {
                 Thread.sleep(750);
 
                 WebElement npButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Más Resultados')]")));
                 npButton.click();
-            }
+            }}catch (Exception e){
+               System.out.println("ya no hay mas paginas");
+           }
 
             List<WebElement> productList = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".product-tile-wrapper")));
             System.out.println("boxes: " + productList.size());

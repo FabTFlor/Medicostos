@@ -35,12 +35,18 @@ public class DrSimiScraper {
 
         try {
             driver.get("https://www.drsimi.cl/medicamento");
-            Thread.sleep(6000);
+            Thread.sleep(7000);
 
-            for (int i = 0; i < 20; i++) {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            try{
+            for (int i = 0; i < 65; i++) {
+                Thread.sleep(2000);
+                js.executeScript("window.scrollBy(0, 2500);");
                 Thread.sleep(2000);
                 WebElement npButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[contains(text(),'Mostrar más')]")));
                 npButton.click();
+            }}catch (Exception e){
+                System.out.println("no encontro el boton");
             }
 
             List<WebElement> productList = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".vtex-search-result-3-x-galleryItem.vtex-search-result-3-x-galleryItem--normal.vtex-search-result-3-x-galleryItem--grid.pa4")));
@@ -69,7 +75,7 @@ public class DrSimiScraper {
                 }
 
                 try {
-                    precioString = product.findElement(By.cssSelector("span.vtex-product-price-1-x-sellingPrice div")).getText();
+                    precioString = product.findElement(By.cssSelector(".justify-start.vtex-flex-layout-0-x-flexRowContent.vtex-flex-layout-0-x-flexRowContent--pricesQty.vtex-flex-layout-0-x-flexRowContent--pricesSummary.items-stretch.w-100")).getText();
                 } catch (Exception e) {
                     System.out.println("Precio no encontrado");
                 }
@@ -104,7 +110,6 @@ public class DrSimiScraper {
                     medicamentoDTO.setUrlMedicamento(urlMedicamento);
                     medicamentoDTO.setFarmaciaId(farmaciaID);
 
-                    System.out.println(medicamentoDTO);
 
                     medicamentoService.saveMedicamento(medicamentoDTO);
                 }

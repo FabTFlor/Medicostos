@@ -44,14 +44,9 @@ public class LaBotikaScraper {
             noButton.click();
 
 
-            WebElement npButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"shopify-section-template--16497710465184__main\"]/section/div[1]/div[2]/div[2]/div/div/div/div[1]/div[1]/div/button")));
-            npButton.click();
-            Thread.sleep(2000);
-            WebElement np96Button = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"display-by-selector\"]/div/div/button[3]")));
-            np96Button.click();
-            Thread.sleep(5000);
 
-            int pg = 20;
+
+            int pg = 44;
 
             for (int page = 1; page <= pg; page++) {
                 try {

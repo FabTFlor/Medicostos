@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class MedicamentoController {
+public class
+
+MedicamentoController {
 
     @Autowired
     private MedicamentoService medicamentoService;
